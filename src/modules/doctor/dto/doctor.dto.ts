@@ -13,14 +13,14 @@ export class CreateDoctorDto {
   @Length(3, 100, {
     message: 'El campo nombre debe de ser mayor a 3 y menor a 100 caracteres',
   })
-  nombre: string;
+  name: string;
 
   @IsNotEmpty({ message: 'El campo especialidad es requerido' })
   @IsString({ message: 'El campo especialidad debe de ser string' })
   @Length(3, 100, {
     message: 'El campo debe de ser mayor a 3 y menor a 100 caracteres',
   })
-  especialidad: string;
+  especiality: string;
 
   @IsBoolean()
   @IsOptional()

@@ -15,17 +15,17 @@ export class Patient {
   id: number;
 
   @Column({ type: 'varchar', length: 100 })
-  nombre: string;
+  name: string;
 
   @Column({ type: 'int' })
-  edad: number;
+  age: number;
 
   @Column({ type: 'varchar', length: 255 })
-  diagnostico: string;
+  diagnostic: string;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.patients)
+  @ManyToOne(() => Doctor, (doctor) => doctor.patientsObject)
   @JoinColumn({ name: 'doctorId' })
-  doctor: Doctor;
+  doctorObject: Doctor;
 
   @Column({ type: 'int' })
   doctorId: number;

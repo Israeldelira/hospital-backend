@@ -6,11 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto, UpdateDoctorDto } from './dto/doctor.dto';
+import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @Controller('doctor')
+@UseGuards(AuthGuard)
 export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
 
@@ -19,7 +24,7 @@ export class DoctorController {
     return this.doctorService.createDoctor(createDoctorDto);
   }
 
-  @Get()
+  @Get('all')
   findAllDoctors() {
     return this.doctorService.findAllDoctors();
   }
@@ -40,5 +45,13 @@ export class DoctorController {
   @Delete(':id')
   removeDoctor(@Param('id') id: number) {
     return this.doctorService.removeDoctor(id);
+  }
+
+  @Get()
+  findAllPatientsByPagination(@Query() paginationDto: PaginationQueryDto) {
+    return this.doctorService.findAllDoctorsByPage(
+      paginationDto.limit ?? 10,
+      paginationDto.page,
+    );
   }
 }

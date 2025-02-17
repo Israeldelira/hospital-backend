@@ -4,15 +4,15 @@ import { IsNotEmpty, IsString, IsInt } from 'class-validator';
 export class CreatePatientDto {
   @IsNotEmpty({ message: 'El campo nombre es requerido' })
   @IsString()
-  nombre: string;
+  name: string;
 
   @IsNotEmpty()
   @IsInt()
-  edad: number;
+  age: number;
 
   @IsNotEmpty()
   @IsString()
-  diagnostico: string;
+  diagnostic: string;
 
   @IsNotEmpty()
   @IsInt()

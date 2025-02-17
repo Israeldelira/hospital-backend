@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePatientDto, UpdatePatientDto } from './dto/patient.dto';
 import { Patient } from './entities/patient.entity';
+import { PaginationResponseDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class PatientService {
@@ -17,13 +18,32 @@ export class PatientService {
   }
 
   async findAllPatients(): Promise<Patient[]> {
-    return await this.patientRepository.find();
+    return await this.patientRepository.find({
+      relations: ['doctorObject'],
+      where: { is_active: true },
+    });
   }
-
+  async findAllPatientsByPage(
+    limit: number,
+    page: number,
+  ): Promise<PaginationResponseDto<Patient>> {
+    const skip = (page - 1) * limit;
+    const resultPatients = await this.patientRepository.findAndCount({
+      relations: ['doctorObject'],
+      take: limit,
+      skip: skip,
+      where: { is_active: true },
+    });
+    console.log(resultPatients);
+    return {
+      data: resultPatients[0],
+      total: resultPatients[1],
+    };
+  }
   async findOnePatient(id: number): Promise<Patient> {
     const patient = await this.patientRepository.findOne({
-      where: { id },
-      relations: ['doctor'],
+      where: { id, is_active: true },
+      relations: ['doctorObject'],
     });
     if (!patient) {
       throw new NotFoundException(`El paciente no fue encontrado.`);
@@ -36,7 +56,7 @@ export class PatientService {
     updatePatientDto: UpdatePatientDto,
   ): Promise<Patient> {
     const existPatient = await this.patientRepository.findOne({
-      where: { id },
+      where: { id, is_active: true },
     });
     if (!existPatient) {
       throw new NotFoundException(`El paciente no fue encontrado.`);
@@ -47,7 +67,7 @@ export class PatientService {
 
   async removePatient(id: number): Promise<Patient> {
     const existPatient = await this.patientRepository.findOne({
-      where: { id },
+      where: { id, is_active: true },
     });
     if (!existPatient) {
       throw new NotFoundException(`El paciente no fue encontrado.`);

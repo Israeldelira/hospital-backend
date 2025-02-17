@@ -16,7 +16,7 @@ export class TypeOrmConfigService {
       password: database.password,
       database: database.database,
       synchronize: true,
-      logging: true,
+      // logging: true,
       autoLoadEntities: true,
     };
   }

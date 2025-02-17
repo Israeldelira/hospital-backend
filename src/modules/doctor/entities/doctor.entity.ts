@@ -14,10 +14,10 @@ export class Doctor {
   id: number;
 
   @Column({ type: 'varchar', length: 100 })
-  nombre: string;
+  name: string;
 
   @Column({ type: 'varchar', length: 100 })
-  especialidad: string;
+  especiality: string;
 
   @Column({ default: 1 })
   is_active: boolean;
@@ -28,6 +28,6 @@ export class Doctor {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Patient, (patient) => patient.doctor)
-  patients: Patient[];
+  @OneToMany(() => Patient, (patient) => patient.doctorObject)
+  patientsObject: Patient[];
 }

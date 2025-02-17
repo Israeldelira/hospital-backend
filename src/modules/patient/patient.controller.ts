@@ -6,9 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { CreatePatientDto, UpdatePatientDto } from './dto/patient.dto';
+import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -19,7 +21,7 @@ export class PatientController {
     return this.patientService.createPatient(createPatientDto);
   }
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.patientService.findAllPatients();
   }
@@ -37,5 +39,12 @@ export class PatientController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.patientService.removePatient(+id);
+  }
+  @Get()
+  findAllPatientsByPagination(@Query() paginationDto: PaginationQueryDto) {
+    return this.patientService.findAllPatientsByPage(
+      paginationDto.limit ?? 10,
+      paginationDto.page,
+    );
   }
 }

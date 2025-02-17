@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateDoctorDto, UpdateDoctorDto } from './dto/doctor.dto';
 import { Doctor } from './entities/doctor.entity';
+import { PaginationResponseDto } from 'src/common/dtos/pagination.dto';
 
 export class DoctorService {
   constructor(
@@ -17,7 +18,8 @@ export class DoctorService {
 
   async findAllDoctors(): Promise<Doctor[]> {
     return await this.doctorRepository.find({
-      relations: ['patients'],
+      relations: ['patientsObject'],
+      where: { is_active: true },
     });
   }
 
@@ -33,7 +35,9 @@ export class DoctorService {
     id: number,
     updateDoctorDto: UpdateDoctorDto,
   ): Promise<Doctor> {
-    const existDoctor = await this.doctorRepository.findOne({ where: { id } });
+    const existDoctor = await this.doctorRepository.findOne({
+      where: { id, is_active: true },
+    });
     if (!existDoctor) {
       throw new NotFoundException(`El doctor no encontrado.`);
     }
@@ -42,11 +46,32 @@ export class DoctorService {
   }
 
   async removeDoctor(id: number): Promise<Doctor> {
-    const existDoctor = await this.doctorRepository.findOne({ where: { id } });
+    const existDoctor = await this.doctorRepository.findOne({
+      where: { id, is_active: true },
+    });
     if (!existDoctor) {
       throw new NotFoundException(`El doctor no encontrado.`);
     }
     existDoctor.is_active = false;
     return await this.doctorRepository.save(existDoctor);
+  }
+
+  async findAllDoctorsByPage(
+    limit: number,
+    page: number,
+  ): Promise<PaginationResponseDto<Doctor>> {
+    const skip = (page - 1) * limit;
+
+    const resultDoctors = await this.doctorRepository.findAndCount({
+      relations: ['patientsObject'],
+      take: limit,
+      skip: skip,
+      where: { is_active: true },
+    });
+
+    return {
+      data: resultDoctors[0],
+      total: resultDoctors[1],
+    };
   }
 }

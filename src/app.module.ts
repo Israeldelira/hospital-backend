@@ -22,8 +22,8 @@ import { AuthModule } from './modules/auth/auth.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule], // Importa el ConfigModule
-      useClass: TypeOrmConfigService, // Usamos el servicio que implementa la configuración de TypeORM
+      imports: [ConfigModule],
+      useClass: TypeOrmConfigService,
     }),
   ],
   controllers: [AppController],
